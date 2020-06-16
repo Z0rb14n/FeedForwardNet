@@ -8,6 +8,7 @@ public class Node {
     private double[] weights;
     private double bias;
 
+    // EFFECTS: initializes Node with given number of inputs
     Node(int numInputs) {
         if (numInputs < 0) throw new IllegalArgumentException();
         weights = new double[numInputs];

@@ -1,5 +1,6 @@
 package ai;
 
+// Represents an AI with weights and biases
 public abstract class AI {
     protected Node[][] layers; // Node[layer number from left-1][node from top]
 

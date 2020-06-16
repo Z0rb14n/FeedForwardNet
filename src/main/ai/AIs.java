@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 
+// Represents a collection of AIs
 public class AIs<T extends AI> implements Iterable<T> {
     private final double KILL_RATE = 0.500000000000000000;
     private final double MUTATION_CHANCE = 0.2;
     private final double MUTATION_AMOUNT = 0.1;
-    protected ArrayList<T> listOfAIs;
-    protected int previousBest;
+    protected ArrayList<T> listOfAIs = new ArrayList<>();
+    protected int previousBest = -1;
 
+    // EFFECTS: initializes the AIs
     AIs() {
-        listOfAIs = new ArrayList<>();
-        previousBest = -1;
     }
 
     // EFFECTS: gets index of best AI
@@ -52,6 +52,7 @@ public class AIs<T extends AI> implements Iterable<T> {
     }
 
     @Override
+    // EFFECTS: returns an iterator over the AIs
     public Iterator<T> iterator() {
         return listOfAIs.iterator();
     }
@@ -59,6 +60,7 @@ public class AIs<T extends AI> implements Iterable<T> {
     // Represents a fitness value comparator
     public class AIComparator implements Comparator<AI> {
         @Override
+        // EFFECTS: compares the two AIs and returns a value if they are greater, equal or less than
         public int compare(AI o1, AI o2) {
             if (o1.calculateFitness() > o2.calculateFitness()) return 1;
             if (o1.calculateFitness() == o2.calculateFitness()) return 0;

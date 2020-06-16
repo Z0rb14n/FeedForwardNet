@@ -1,16 +1,15 @@
 package platformer;
 
-import processing.core.PApplet;
-
+import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
+// Represents the collection of platforms
 class Platforms {
     private static final int STARTING_X_POS = 0;
     private static final int STARTING_Y_POS = 200;
     private static final int STARTING_WIDTH = 200;
-    private final Random RANDOM = new Random();
     private static final long RANDOM_SEED = 69420666;
 
     private static final int MIN_GAP_SIZE = 10;
@@ -23,8 +22,9 @@ class Platforms {
     private int[] heightDifferences;
     private int[] gaps;
 
+    // EFFECTS: initializes the platforms
     Platforms(int number) {
-        RANDOM.setSeed(RANDOM_SEED);
+        Random rand = new Random(RANDOM_SEED);
         if (number < 1) throw new IllegalArgumentException();
         platforms = new Platform[number];
         heightDifferences = new int[number - 1];
@@ -35,10 +35,10 @@ class Platforms {
         int previousWidth = platforms[0].getWidth();
         int previousYPos = platforms[0].getYPosition();
         for (int i = 1; i < number; i++) {
-            int nextGap = RANDOM.nextInt(MAX_GAP_SIZE - MIN_GAP_SIZE) + MIN_GAP_SIZE;
-            int width = (int) Math.round(RANDOM.nextGaussian() * 50) + (Platform.MIN_WIDTH) + 50;
-            int nextHeightDifference = RANDOM.nextInt(MAX_HEIGHT_DIFF);
-            if (RANDOM.nextBoolean()) nextHeightDifference *= -1;
+            int nextGap = rand.nextInt(MAX_GAP_SIZE - MIN_GAP_SIZE) + MIN_GAP_SIZE;
+            int width = (int) Math.round(rand.nextGaussian() * 50) + (Platform.MIN_WIDTH) + 50;
+            int nextHeightDifference = rand.nextInt(MAX_HEIGHT_DIFF);
+            if (rand.nextBoolean()) nextHeightDifference *= -1;
             if (width < Platform.MIN_WIDTH) width = Platform.MIN_WIDTH;
             gaps[i - 1] = nextGap;
             xPositions[i] = previousWidth + xPositions[i - 1] + nextGap;
@@ -47,6 +47,8 @@ class Platforms {
         }
     }
 
+    // MODIFIES: pai
+    // EFFECTS: adjusts platformerAI location if it is in a platform
     void adjustPlayerLocation(PlatformerAI pai) {
         for (Platform p : platforms) {
             if (p.adjustPlayerPosition(pai)) {
@@ -55,6 +57,7 @@ class Platforms {
         }
     }
 
+    // EFFECTS: determines if the given platformerAI can jump
     boolean playerCanJump(PlatformerAI pai) {
         for (Platform p : platforms) {
             if (p.playerOnPlatform(pai) || p.isPlayerInside(pai)) return true;
@@ -65,6 +68,7 @@ class Platforms {
     private HashMap<PlatformerAI, Integer> recordedAnswers = new HashMap<>();
     private HashMap<PlatformerAI, Float> recordedPositions = new HashMap<>();
 
+    // EFFECTS: returns the platform index which the AI is above
     private int platformAbove(PlatformerAI pai) {
         if (recordedPositions.containsKey(pai)) {
             if (recordedPositions.get(pai) == pai.getXPosition()) return recordedAnswers.get(pai);
@@ -81,6 +85,7 @@ class Platforms {
         return value;
     }
 
+    // EFFECTS: returns the distance to the edge of the platform for this platformerAI (scaled to 1)
     double distanceToEdgeOfPlatform(PlatformerAI pai) {
         int indexAbove = platformAbove(pai);
         if (indexAbove == -1) return -1;
@@ -88,12 +93,14 @@ class Platforms {
         return (pai.getXPosition() - p.getXPosition()) / p.getWidth();
     }
 
+    // EFFECTS: returns the gap to the next platform for this platformerAI (scaled to 1)
     double gapToNextPlatform(PlatformerAI pai) {
         int index = Arrays.binarySearch(xPositions, Math.round(pai.getXPosition()));
         if (index >= 0) return (double) gaps[index] / MAX_GAP_SIZE;
         return (double) gaps[-(index + 1) - 1] / MAX_GAP_SIZE;
     }
 
+    // EFFECTS: returns the next height difference for this platformerAI (scaled to 1)
     double nextHeightDiff(PlatformerAI pai) {
         int indexAbove = platformAbove(pai);
         if (indexAbove == -1) {
@@ -105,9 +112,11 @@ class Platforms {
         }
     }
 
-    void showPlatforms(PApplet surface) {
+    // MODIFIES: g
+    // EFFECTS: draws all platforms onto given graphics object
+    void showPlatforms(Graphics2D g) {
         for (Platform p : platforms) {
-            p.draw(surface);
+            p.draw(g);
         }
     }
 }
