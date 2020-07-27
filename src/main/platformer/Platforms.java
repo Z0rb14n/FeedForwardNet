@@ -12,9 +12,11 @@ class Platforms {
     private static final int STARTING_WIDTH = 200;
     private static final long RANDOM_SEED = 69420666;
 
-    private static final int MIN_GAP_SIZE = 10;
-    private static final int MAX_GAP_SIZE = 60;
-    private static final int MAX_HEIGHT_DIFF = 60;
+    private static final int MIN_GAP_SIZE = 20;
+    private static final int MAX_GAP_SIZE = 100;
+    private static final int MAX_HEIGHT_DIFF = 80;
+
+    private static final int PLATFORM_VARIATION_SCALING = 50;
 
     private static final Platform STARTING = new Platform(STARTING_WIDTH, STARTING_X_POS, STARTING_Y_POS);
     private int[] xPositions;
@@ -36,14 +38,16 @@ class Platforms {
         int previousYPos = platforms[0].getYPosition();
         for (int i = 1; i < number; i++) {
             int nextGap = rand.nextInt(MAX_GAP_SIZE - MIN_GAP_SIZE) + MIN_GAP_SIZE;
-            int width = (int) Math.round(rand.nextGaussian() * 50) + (Platform.MIN_WIDTH) + 50;
+            int width = (int) Math.round((rand.nextGaussian() + 1) * PLATFORM_VARIATION_SCALING) + Platform.MIN_WIDTH;
+            if (width < Platform.MIN_WIDTH) width = Platform.MIN_WIDTH;
             int nextHeightDifference = rand.nextInt(MAX_HEIGHT_DIFF);
             if (rand.nextBoolean()) nextHeightDifference *= -1;
-            if (width < Platform.MIN_WIDTH) width = Platform.MIN_WIDTH;
             gaps[i - 1] = nextGap;
             xPositions[i] = previousWidth + xPositions[i - 1] + nextGap;
             heightDifferences[i - 1] = nextHeightDifference;
             platforms[i] = new Platform(width, xPositions[i], previousYPos + nextHeightDifference);
+            previousWidth = width;
+            previousYPos += nextHeightDifference;
         }
     }
 

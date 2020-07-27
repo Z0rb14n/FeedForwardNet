@@ -94,9 +94,9 @@ public class PlatformerAI extends GraphicalAI {
     public void drawBest(Graphics2D g) {
         Shape shape = new Rectangle2D.Float(pos.x, pos.y, PLAYER_WIDTH, PLAYER_HEIGHT);
         Shape ellipse = new Ellipse2D.Float(pos.x - 2.5f, pos.y - 2.5f, 5, 5);
-        g.setColor(Color.GREEN);
-        g.fill(shape);
         g.setColor(Color.BLUE);
+        g.fill(shape);
+        g.setColor(Color.WHITE);
         g.fill(ellipse);
         g.setStroke(new BasicStroke(1));
         g.setColor(Color.BLACK);
